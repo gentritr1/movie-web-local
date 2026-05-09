@@ -1,6 +1,7 @@
 import { SimpleCache } from "@/utils/cache";
 import { MediaItem } from "@/utils/mediaTypes";
 
+import { isJellyfinEnabled, searchJellyfinMedia } from "../jellyfin";
 import {
   formatTMDBMetaToMediaItem,
   formatTMDBSearchResult,
@@ -17,6 +18,12 @@ cache.initialize();
 export async function searchForMedia(query: MWQuery): Promise<MediaItem[]> {
   if (cache.has(query)) return cache.get(query) as MediaItem[];
   const { searchQuery } = query;
+
+  if (isJellyfinEnabled()) {
+    const results = await searchJellyfinMedia(searchQuery);
+    cache.set(query, results, 3600);
+    return results;
+  }
 
   const data = await multiSearch(searchQuery);
   const results = data.map((v) => {

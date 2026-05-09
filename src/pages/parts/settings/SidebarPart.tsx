@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import Sticky from "react-sticky-el";
 import { useAsync } from "react-use";
 
 import { getBackendMeta } from "@/backend/accounts/meta";
@@ -118,12 +117,9 @@ export function SidebarPart() {
 
   return (
     <div className="text-settings-sidebar-type-inactive sidebar-boundary">
-      <Sticky
-        topOffset={-6 * rem}
-        stickyClassName="pt-[6rem]"
-        disabled={isMobile}
-        hideOnBoundaryHit={false}
-        boundaryElement=".sidebar-boundary"
+      <div
+        className={isMobile ? undefined : "sticky pt-[6rem]"}
+        style={isMobile ? undefined : { top: `${6 * rem}px` }}
       >
         <div className="hidden lg:block">
           <SidebarSection title={t("global.pages.settings")}>
@@ -206,7 +202,7 @@ export function SidebarPart() {
             </div>
           </div>
         </SidebarSection>
-      </Sticky>
+      </div>
     </div>
   );
 }

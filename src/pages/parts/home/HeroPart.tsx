@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import Sticky from "react-sticky-el";
 import { useWindowSize } from "react-use";
 
 import { SearchBarInput } from "@/components/form/SearchBar";
@@ -26,14 +25,13 @@ function getTimeOfDay(date: Date): "night" | "morning" | "day" {
 export function HeroPart({ setIsSticky, searchParams }: HeroPartProps) {
   const { t: randomT } = useRandomTranslation();
   const [search, setSearch, setSearchUnFocus] = searchParams;
-  const [, setShowBg] = useState(false);
   const bannerSize = useBannerSize();
+  const stickyContainerRef = useRef<HTMLDivElement>(null);
   const stickStateChanged = useCallback(
     (isFixed: boolean) => {
-      setShowBg(isFixed);
       setIsSticky(isFixed);
     },
-    [setShowBg, setIsSticky],
+    [setIsSticky],
   );
 
   const { width: windowWidth } = useWindowSize();
@@ -50,6 +48,24 @@ export function HeroPart({ setIsSticky, searchParams }: HeroPartProps) {
     }
   }, [windowWidth]);
 
+  useEffect(() => {
+    function checkSticky() {
+      const el = stickyContainerRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      stickStateChanged(rect.top <= stickyOffset + bannerSize);
+    }
+
+    window.addEventListener("scroll", checkSticky, { passive: true });
+    window.addEventListener("resize", checkSticky);
+    checkSticky();
+
+    return () => {
+      window.removeEventListener("scroll", checkSticky);
+      window.removeEventListener("resize", checkSticky);
+    };
+  }, [bannerSize, stickStateChanged, stickyOffset]);
+
   const time = getTimeOfDay(new Date());
   const title = randomT(`home.titles.${time}`);
   const placeholder = randomT(`home.search.placeholder`);
@@ -63,12 +79,12 @@ export function HeroPart({ setIsSticky, searchParams }: HeroPartProps) {
           <HeroTitle className="mx-auto max-w-md">{title}</HeroTitle>
         </div>
         <div className="relative h-20 z-30">
-          <Sticky
-            topOffset={stickyOffset * -1 + bannerSize}
-            stickyStyle={{
-              paddingTop: `${stickyOffset + bannerSize}px`,
+          <div
+            ref={stickyContainerRef}
+            className="sticky"
+            style={{
+              top: `${stickyOffset + bannerSize}px`,
             }}
-            onFixedToggle={stickStateChanged}
           >
             <SearchBarInput
               ref={inputRef}
@@ -77,7 +93,7 @@ export function HeroPart({ setIsSticky, searchParams }: HeroPartProps) {
               onUnFocus={setSearchUnFocus}
               placeholder={placeholder ?? ""}
             />
-          </Sticky>
+          </div>
         </div>
       </div>
     </ThinContainer>

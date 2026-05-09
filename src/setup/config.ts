@@ -16,6 +16,11 @@ interface Config {
   CORS_PROXY_URL: string;
   NORMAL_ROUTER: boolean;
   BACKEND_URL: string;
+  JELLYFIN_SERVER_URL: string;
+  JELLYFIN_USERNAME: string;
+  JELLYFIN_PASSWORD: string;
+  JELLYFIN_TOKEN: string;
+  JELLYFIN_USER_ID: string;
   DISALLOWED_IDS: string;
   TURNSTILE_KEY: string;
   CDN_REPLACEMENTS: string;
@@ -36,6 +41,11 @@ export interface RuntimeConfig {
   NORMAL_ROUTER: boolean;
   PROXY_URLS: string[];
   BACKEND_URL: string | null;
+  JELLYFIN_SERVER_URL: string | null;
+  JELLYFIN_USERNAME: string | null;
+  JELLYFIN_PASSWORD: string | null;
+  JELLYFIN_TOKEN: string | null;
+  JELLYFIN_USER_ID: string | null;
   DISALLOWED_IDS: string[];
   TURNSTILE_KEY: string | null;
   CDN_REPLACEMENTS: Array<string[]>;
@@ -62,6 +72,11 @@ const env: Record<keyof Config, undefined | string> = {
   CORS_PROXY_URL: import.meta.env.VITE_CORS_PROXY_URL,
   NORMAL_ROUTER: import.meta.env.VITE_NORMAL_ROUTER,
   BACKEND_URL: import.meta.env.VITE_BACKEND_URL,
+  JELLYFIN_SERVER_URL: import.meta.env.VITE_JELLYFIN_SERVER_URL,
+  JELLYFIN_USERNAME: import.meta.env.VITE_JELLYFIN_USERNAME,
+  JELLYFIN_PASSWORD: import.meta.env.VITE_JELLYFIN_PASSWORD,
+  JELLYFIN_TOKEN: import.meta.env.VITE_JELLYFIN_TOKEN,
+  JELLYFIN_USER_ID: import.meta.env.VITE_JELLYFIN_USER_ID,
   DISALLOWED_IDS: import.meta.env.VITE_DISALLOWED_IDS,
   TURNSTILE_KEY: import.meta.env.VITE_TURNSTILE_KEY,
   CDN_REPLACEMENTS: import.meta.env.VITE_CDN_REPLACEMENTS,
@@ -105,6 +120,11 @@ export function conf(): RuntimeConfig {
     ),
     ONBOARDING_PROXY_INSTALL_LINK: getKey("ONBOARDING_PROXY_INSTALL_LINK"),
     BACKEND_URL: getKey("BACKEND_URL", BACKEND_URL),
+    JELLYFIN_SERVER_URL: getKey("JELLYFIN_SERVER_URL"),
+    JELLYFIN_USERNAME: getKey("JELLYFIN_USERNAME"),
+    JELLYFIN_PASSWORD: getKey("JELLYFIN_PASSWORD"),
+    JELLYFIN_TOKEN: getKey("JELLYFIN_TOKEN"),
+    JELLYFIN_USER_ID: getKey("JELLYFIN_USER_ID"),
     TMDB_READ_API_KEY: getKey("TMDB_READ_API_KEY"),
     PROXY_URLS: getKey("CORS_PROXY_URL", "")
       .split(",")

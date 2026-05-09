@@ -15,6 +15,13 @@ window.__CONFIG__ = {
   // The backend URL to communicate with
   VITE_BACKEND_URL: null,
 
+  // Jellyfin integration
+  VITE_JELLYFIN_SERVER_URL: null,
+  VITE_JELLYFIN_USERNAME: null,
+  VITE_JELLYFIN_PASSWORD: null,
+  VITE_JELLYFIN_TOKEN: null,
+  VITE_JELLYFIN_USER_ID: null,
+
   // A comma separated list of disallowed IDs in the case of a DMCA claim - in the format "series-<id>" and "movie-<id>"
   VITE_DISALLOWED_IDS: "",
 };

@@ -15,6 +15,13 @@ const baseFetch = ofetch.create({
   retry: 0,
 });
 
+function assertProxyUrl(proxyUrl: string) {
+  const parsed = new URL(proxyUrl);
+  if (parsed.username || parsed.password) {
+    throw new Error("proxy-credentials-not-supported");
+  }
+}
+
 export function makeUrl(url: string, data: Record<string, string>) {
   let parsedUrl: string = url;
   Object.entries(data).forEach(([k, v]) => {
@@ -41,6 +48,7 @@ export async function singularProxiedFetch<T>(
   url: string,
   ops: P<T>[1] = {},
 ): R<T> {
+  assertProxyUrl(proxyUrl);
   let combinedUrl = ops?.baseURL ?? "";
   if (
     combinedUrl.length > 0 &&

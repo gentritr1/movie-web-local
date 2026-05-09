@@ -1,5 +1,6 @@
 import slugify from "slugify";
 
+import { isJellyfinEnabled, jellyfinMediaItemToId } from "@/backend/jellyfin";
 import { conf } from "@/setup/config";
 import { MediaItem } from "@/utils/mediaTypes";
 
@@ -119,6 +120,9 @@ export function TMDBMediaToId(media: MWMediaMeta): string {
 }
 
 export function mediaItemToId(media: MediaItem): string {
+  if (isJellyfinEnabled()) {
+    return jellyfinMediaItemToId(media);
+  }
   return TMDBIdToUrlId(
     mediaItemTypeToMediaType(media.type),
     media.id,

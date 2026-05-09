@@ -205,6 +205,7 @@
       "explainer": "With the proxy method, you can get great quality streams by making a self-service proxy.",
       "input": {
         "errorConnection": "Could not connect to proxy",
+        "errorCredentials": "Proxy URLs with embedded username/password are not supported",
         "errorInvalidUrl": "Not a valid URL",
         "errorNotProxy": "Expected a proxy but got a website",
         "label": "Proxy URL",

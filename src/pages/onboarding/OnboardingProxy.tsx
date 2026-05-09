@@ -21,6 +21,7 @@ import { Link } from "@/pages/onboarding/utils";
 import { PageTitle } from "@/pages/parts/util/PageTitle";
 import { conf } from "@/setup/config";
 import { useAuthStore } from "@/stores/auth";
+import { getProxyUrls } from "@/utils/proxyUrls";
 
 const testUrl = "https://postman-echo.com/get";
 
@@ -28,7 +29,7 @@ export function OnboardingProxyPage() {
   const { t } = useTranslation();
   const navigate = useNavigateOnboarding();
   const { completeAndRedirect } = useRedirectBack();
-  const [url, setUrl] = useState("");
+  const [url, setUrl] = useState(() => getProxyUrls()[0] ?? "");
   const setProxySet = useAuthStore((s) => s.setProxySet);
   const installLink = conf().ONBOARDING_PROXY_INSTALL_LINK;
   const backendUrl = useBackendUrl();
@@ -37,6 +38,10 @@ export function OnboardingProxyPage() {
   const [{ loading, error }, test] = useAsyncFn(async () => {
     if (!url.startsWith("http"))
       throw new Error("onboarding.proxy.input.errorInvalidUrl");
+    const parsed = new URL(url);
+    if (parsed.username || parsed.password) {
+      throw new Error("onboarding.proxy.input.errorCredentials");
+    }
     try {
       const res = await singularProxiedFetch(url, testUrl, {});
       if (res.url !== testUrl)
@@ -51,6 +56,12 @@ export function OnboardingProxyPage() {
 
       completeAndRedirect();
     } catch (e) {
+      if ((e as Error).message === "onboarding.proxy.input.errorCredentials") {
+        throw e;
+      }
+      if ((e as Error).message === "proxy-credentials-not-supported") {
+        throw new Error("onboarding.proxy.input.errorCredentials");
+      }
       throw new Error("onboarding.proxy.input.errorConnection");
     }
   }, [url, completeAndRedirect, setProxySet]);
