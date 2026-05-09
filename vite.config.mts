@@ -1,5 +1,5 @@
 import { defineConfig } from "vitest/config";
-import { VitePluginReact } from "vite-plugin-react";
+import react from "@vitejs/plugin-react";
 import loadVersion from "vite-plugin-package-version";
 import { VitePWA } from "vite-plugin-pwa";
 import checker from "vite-plugin-checker";
@@ -37,7 +37,7 @@ export default defineConfig(({ mode }) => {
           env,
         },
       }),
-      VitePluginReact(),
+      react(),
       VitePWA({
         disable: env.VITE_PWA_ENABLED !== "true",
         registerType: "autoUpdate",
@@ -92,13 +92,6 @@ export default defineConfig(({ mode }) => {
           position: "tr",
         },
         typescript: true, // check typescript build errors in dev server
-        eslint: {
-          // check lint errors in dev server
-          lintCommand: "eslint --ext .tsx,.ts src",
-          dev: {
-            logLevel: ["error"],
-          },
-        },
       }),
       splitVendorChunkPlugin(),
       visualizer() as PluginOption

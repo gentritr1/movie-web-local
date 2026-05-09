@@ -5,6 +5,11 @@ import { getLoadbalancedProxyUrl } from "@/backend/providers/fetchers";
 
 type P<T> = Parameters<typeof ofetch<T, any>>;
 type R<T> = ReturnType<typeof ofetch<T, any>>;
+type FetchOptions<T> = NonNullable<P<T>[1]>;
+type OnResponse<T> = FetchOptions<T>["onResponse"];
+type OnResponseContext<T> = Parameters<
+  NonNullable<Exclude<OnResponse<T>, any[]>>
+>[0];
 
 const baseFetch = ofetch.create({
   retry: 0,
@@ -20,6 +25,15 @@ export function makeUrl(url: string, data: Record<string, string>) {
 
 export function mwFetch<T>(url: string, ops: P<T>[1] = {}): R<T> {
   return baseFetch<T>(url, ops);
+}
+
+function runResponseHooks<T>(onResponse: OnResponse<T>, context: OnResponseContext<T>) {
+  if (!onResponse) return;
+  if (Array.isArray(onResponse)) {
+    onResponse.forEach((hook) => hook(context));
+    return;
+  }
+  onResponse(context);
 }
 
 export async function singularProxiedFetch<T>(
@@ -69,7 +83,7 @@ export async function singularProxiedFetch<T>(
     onResponse(context) {
       const tokenHeader = context.response.headers.get("X-Token");
       if (tokenHeader) setApiToken(tokenHeader);
-      ops.onResponse?.(context);
+      runResponseHooks<T>(ops.onResponse, context);
     },
   });
 }

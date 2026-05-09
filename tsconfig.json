@@ -17,7 +17,9 @@
     "baseUrl": "./",
     "paths": {
       "@/*": ["src/*"],
-      "@sozialhelden/ietf-language-tags": ["../node_modules/@sozialhelden/ietf-language-tags/dist/cjs"]
+      "@sozialhelden/ietf-language-tags": [
+        "node_modules/@sozialhelden/ietf-language-tags/dist/esm/index.d.ts"
+      ]
     },
     "types": ["vite/client", "vite-plugin-pwa/vanillajs"]
   },
