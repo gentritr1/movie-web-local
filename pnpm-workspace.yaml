@@ -1,0 +1,5 @@
+packages:
+  - "."
+
+onlyBuiltDependencies:
+  - "@movie-web/providers"

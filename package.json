@@ -111,5 +111,6 @@
     "vite-plugin-pwa": "^1.3.0",
     "vite-plugin-static-copy": "^0.17.1",
     "vitest": "^1.5.3"
-  }
+  },
+  "packageManager": "pnpm@8.15.8"
 }
